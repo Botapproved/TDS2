@@ -1,6 +1,10 @@
 import os
 import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from pathlib import Path
+
+# Add the project root to Python path
+project_root = Path(__file__).parent.parent
+sys.path.append(str(project_root))
 
 from multiprocessing import process
 import subprocess
@@ -15,8 +19,7 @@ import inspect
 app = Flask(__name__)
 
 # Get the absolute path to the data directory
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-QUESTIONS_FILE = os.path.join(BASE_DIR, 'data', 'questions.json')
+QUESTIONS_FILE = project_root / 'data' / 'questions.json'
 
 tmp_dir = "tmp_uploads"
 os.makedirs(tmp_dir, exist_ok=True)
@@ -34,7 +37,7 @@ def process_file():
     tmp_dir = "tmp_uploads"
     try:
         # Use the absolute path for questions.json
-        similar_question = find_similar_question(question, QUESTIONS_FILE)
+        similar_question = find_similar_question(question, str(QUESTIONS_FILE))
         if not similar_question:
             return jsonify({'error': 'No similar question found'}), 404
 
