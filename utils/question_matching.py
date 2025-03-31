@@ -3,14 +3,12 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-def find_similar_question(input_question, questions_file_path):
-    questions_json = {}
+def find_similar_question(input_question, questions_data=None):
+    if questions_data is None:
+        questions_data = {}
 
-    with open(questions_file_path, "r") as f:
-        questions_json = json.load(f)
-
-    question_keys = list(questions_json.keys())
-    question_descriptions = [questions_json[key]["description"] for key in question_keys]
+    question_keys = list(questions_data.keys())
+    question_descriptions = [questions_data[key]["description"] for key in question_keys]
 
     vectorizer = TfidfVectorizer()
     tfidf_matrix = vectorizer.fit_transform(question_descriptions)
