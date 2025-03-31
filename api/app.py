@@ -1,6 +1,5 @@
 import os
 import sys
-import json
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from multiprocessing import process
@@ -15,8 +14,9 @@ import inspect
 
 app = Flask(__name__)
 
-# Get questions data from environment variable
-QUESTIONS_DATA = json.loads(os.getenv('QUESTIONS_DATA', '{}'))
+# Get the absolute path to the data directory
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+QUESTIONS_FILE = os.path.join(BASE_DIR, 'data', 'questions.json')
 
 tmp_dir = "tmp_uploads"
 os.makedirs(tmp_dir, exist_ok=True)
@@ -33,8 +33,8 @@ def process_file():
     # Ensure tmp_dir is always assigned
     tmp_dir = "tmp_uploads"
     try:
-        # Use questions data from environment variable
-        similar_question = find_similar_question(question, questions_data=QUESTIONS_DATA)
+        # Use the absolute path for questions.json
+        similar_question = find_similar_question(question, QUESTIONS_FILE)
         if not similar_question:
             return jsonify({'error': 'No similar question found'}), 404
 
